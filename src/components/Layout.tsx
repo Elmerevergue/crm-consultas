@@ -2,16 +2,15 @@ import { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, Building2, Tag, Users, BarChart3,
-  Menu, X, ChevronDown, LogIn, Columns, Bell, Moon, Sun,
-  Briefcase,
+  Menu, X, Columns, Bell, Moon, Sun,
+  Briefcase, LogOut,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { equipoAPI, remindersAPI } from '../api/client';
-import { TeamMember } from '../types';
+import { remindersAPI } from '../api/client';
 import { useCurrentUser } from '../context/UserContext';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 import Avatar from './Avatar';
-import Modal from './Modal';
 
 const NAV_ITEMS = [
   { to: '/dashboard',     icon: LayoutDashboard, label: 'Dashboard' },
@@ -26,14 +25,9 @@ const NAV_ITEMS = [
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [userPickerOpen, setUserPickerOpen] = useState(false);
-  const { currentUser, setCurrentUser } = useCurrentUser();
+  const { currentUser } = useCurrentUser();
   const { dark, toggle } = useTheme();
-
-  const { data: members = [] } = useQuery<TeamMember[]>({
-    queryKey: ['equipo'],
-    queryFn: equipoAPI.getAll,
-  });
+  const { signOut } = useAuth();
 
   // Count pending reminders for badge
   const { data: pendingReminders = [] } = useQuery({
@@ -96,7 +90,7 @@ export default function Layout() {
           ))}
         </nav>
 
-        {/* Dark mode + user */}
+        {/* Bottom section */}
         <div className="px-4 py-3 border-t border-slate-700 space-y-2">
           {/* Dark mode toggle */}
           <button
@@ -107,28 +101,24 @@ export default function Layout() {
             {dark ? 'Modo claro' : 'Modo oscuro'}
           </button>
 
-          {/* User picker */}
+          {/* Current user info */}
+          {currentUser && (
+            <div className="flex items-center gap-3 px-3 py-2">
+              <Avatar name={currentUser.name} color={currentUser.color} size="sm" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-white truncate">{currentUser.name}</p>
+                <p className="text-xs text-slate-400 truncate">{currentUser.role}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Sign out */}
           <button
-            onClick={() => setUserPickerOpen(true)}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-700 transition-colors group"
+            onClick={signOut}
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-red-400 hover:bg-red-900/30 hover:text-red-300 transition-colors text-sm"
           >
-            {currentUser ? (
-              <>
-                <Avatar name={currentUser.name} color={currentUser.color} size="sm" />
-                <div className="flex-1 text-left min-w-0">
-                  <p className="text-sm font-medium text-white truncate">{currentUser.name}</p>
-                  <p className="text-xs text-slate-400 truncate">{currentUser.role}</p>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center">
-                  <LogIn size={14} className="text-slate-400" />
-                </div>
-                <span className="text-sm text-slate-400 flex-1 text-left">Seleccionar usuario</span>
-              </>
-            )}
-            <ChevronDown size={14} className="text-slate-500 group-hover:text-slate-300 transition-colors" />
+            <LogOut size={16} />
+            Cerrar sesión
           </button>
         </div>
       </aside>
@@ -171,39 +161,6 @@ export default function Layout() {
           <Outlet />
         </main>
       </div>
-
-      {/* Modal selector de usuario */}
-      <Modal open={userPickerOpen} onClose={() => setUserPickerOpen(false)} title="¿Quién eres?">
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-          Selecciona tu nombre para registrar tu actividad correctamente.
-        </p>
-        <div className="space-y-2">
-          {members.map(m => (
-            <button
-              key={m.id}
-              onClick={() => { setCurrentUser(m); setUserPickerOpen(false); }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-colors
-                ${currentUser?.id === m.id
-                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                  : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'}`}
-            >
-              <Avatar name={m.name} color={m.color} />
-              <div className="text-left">
-                <p className="font-medium text-gray-900 dark:text-gray-100">{m.name}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">{m.role}</p>
-              </div>
-              {currentUser?.id === m.id && (
-                <span className="ml-auto text-blue-600 text-xs font-medium">Activo</span>
-              )}
-            </button>
-          ))}
-          {members.length === 0 && (
-            <p className="text-sm text-gray-500 text-center py-4">
-              No hay miembros del equipo. Ve a <strong>Equipo</strong> para agregar.
-            </p>
-          )}
-        </div>
-      </Modal>
     </div>
   );
 }
