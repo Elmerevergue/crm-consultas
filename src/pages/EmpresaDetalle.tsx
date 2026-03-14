@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ElementType, type ReactNode } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { empresasAPI, actividadesAPI } from '../api/client';
@@ -193,7 +193,7 @@ export default function EmpresaDetalle() {
 function InfoRow({
   icon: Icon, label, value,
 }: {
-  icon: React.ElementType; label: string; value: React.ReactNode;
+  icon: ElementType; label: string; value: ReactNode;
 }) {
   return (
     <div>

@@ -4,8 +4,7 @@ import { Stats, MemberStat } from '../types';
 import Avatar from '../components/Avatar';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend, RadarChart, Radar, PolarGrid,
-  PolarAngleAxis, PolarRadiusAxis,
+  PieChart, Pie, Cell, Legend,
 } from 'recharts';
 import { Trophy, TrendingUp, BarChart3, Users } from 'lucide-react';
 

@@ -1,10 +1,11 @@
+import type { ElementType, ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { statsAPI } from '../api/client';
 import { Stats, STATUS_COLORS } from '../types';
 import Avatar from '../components/Avatar';
 import {
   Building2, TrendingUp, Trophy, Clock,
-  CheckCircle2, XCircle, MessageSquare, RefreshCw,
+  CheckCircle2, MessageSquare, RefreshCw,
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -15,7 +16,7 @@ function StatCard({
   label, value, sub, icon: Icon, color,
 }: {
   label: string; value: string | number; sub?: string;
-  icon: React.ElementType; color: string;
+  icon: ElementType; color: string;
 }) {
   return (
     <div className="card p-5">
@@ -33,7 +34,7 @@ function StatCard({
   );
 }
 
-const ACTION_ICONS: Record<string, React.ElementType> = {
+const ACTION_ICONS: Record<string, ElementType> = {
   creado: Building2,
   estado_cambiado: RefreshCw,
   nota: MessageSquare,
