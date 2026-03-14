@@ -66,7 +66,7 @@ export default function Dashboard() {
 
   if (!stats) return null;
 
-  const { totals, memberStats, categoryStats, recentActivity, trend, conversionRate } = stats;
+  const { totals, memberStats, categoryStats, serviceStats, recentActivity, trend, conversionRate } = stats;
 
   const pieData = [
     { name: 'Prospecto',  value: totals.prospectos,    key: 'prospecto' },
@@ -215,19 +215,39 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Service stats */}
+      {serviceStats && serviceStats.length > 0 && (
+        <div className="card p-5">
+          <h2 className="section-title mb-4">Clientes por servicio</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {serviceStats.map(svc => (
+              <div key={svc.name} className="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+                <div
+                  className="w-3 h-3 rounded-full mx-auto mb-2"
+                  style={{ backgroundColor: svc.color }}
+                />
+                <p className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate">{svc.name}</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">{svc.total}</p>
+                <p className="text-xs text-green-600 mt-0.5">{svc.ganados} ganados</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Category stats */}
       {categoryStats.length > 0 && (
         <div className="card p-5">
-          <h2 className="section-title mb-4">Empresas por categoría</h2>
+          <h2 className="section-title mb-4">Clientes por categoría</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {categoryStats.map(cat => (
-              <div key={cat.name} className="text-center p-3 rounded-lg bg-gray-50">
+              <div key={cat.name} className="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
                 <div
                   className="w-3 h-3 rounded-full mx-auto mb-2"
                   style={{ backgroundColor: cat.color }}
                 />
-                <p className="text-xs font-medium text-gray-700 truncate">{cat.name}</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{cat.total}</p>
+                <p className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate">{cat.name}</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">{cat.total}</p>
                 <p className="text-xs text-green-600 mt-0.5">{cat.ganados} ganadas</p>
               </div>
             ))}

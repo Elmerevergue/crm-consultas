@@ -14,7 +14,18 @@ export interface Category {
   created_at: string;
 }
 
+export interface Service {
+  id: string;
+  name: string;
+  description: string;
+  color: string;
+  price: string;
+  active: boolean;
+  created_at: string;
+}
+
 export type EmpresaStatus = 'prospecto' | 'contactado' | 'negociando' | 'ganado' | 'perdido';
+export type Priority = 'baja' | 'media' | 'alta' | 'urgente';
 
 export interface Empresa {
   id: string;
@@ -26,8 +37,12 @@ export interface Empresa {
   location: string;
   details: string;
   status: EmpresaStatus;
+  priority: Priority;
   assigned_to: string | null;
   created_by: string | null;
+  service_id: string | null;
+  servicio_solicitado: string;
+  custom_fields: Record<string, string>;
   created_at: string;
   updated_at: string;
   // joined
@@ -36,6 +51,8 @@ export interface Empresa {
   assigned_name?: string;
   assigned_color?: string;
   created_by_name?: string;
+  service_name?: string;
+  service_color?: string;
 }
 
 export interface Activity {
@@ -48,6 +65,22 @@ export interface Activity {
   member_name?: string;
   member_color?: string;
   company_name?: string;
+}
+
+export interface Reminder {
+  id: string;
+  empresa_id: string;
+  team_member_id: string | null;
+  title: string;
+  description: string;
+  due_date: string;
+  completed: boolean;
+  priority: Priority;
+  created_at: string;
+  // joined
+  empresa_name?: string;
+  member_name?: string;
+  member_color?: string;
 }
 
 export interface MemberStat {
@@ -73,6 +106,7 @@ export interface Stats {
   };
   memberStats: MemberStat[];
   categoryStats: Array<{ name: string; color: string; total: number; ganados: number }>;
+  serviceStats: Array<{ name: string; color: string; total: number; ganados: number; negociando: number }>;
   recentActivity: Activity[];
   trend: Array<{ month: string; total: number; ganadas: number }>;
   conversionRate: string;
@@ -94,9 +128,25 @@ export const STATUS_COLORS: Record<EmpresaStatus, { bg: string; text: string; do
   perdido:    { bg: 'bg-red-100',    text: 'text-red-700',    dot: 'bg-red-500' },
 };
 
+export const PRIORITY_LABELS: Record<Priority, string> = {
+  baja:    'Baja',
+  media:   'Media',
+  alta:    'Alta',
+  urgente: 'Urgente',
+};
+
+export const PRIORITY_COLORS: Record<Priority, { bg: string; text: string; dot: string }> = {
+  baja:    { bg: 'bg-slate-100',  text: 'text-slate-600',  dot: 'bg-slate-400' },
+  media:   { bg: 'bg-blue-100',   text: 'text-blue-600',   dot: 'bg-blue-400' },
+  alta:    { bg: 'bg-orange-100', text: 'text-orange-600', dot: 'bg-orange-500' },
+  urgente: { bg: 'bg-red-100',    text: 'text-red-600',    dot: 'bg-red-500' },
+};
+
 export const ACTION_LABELS: Record<string, string> = {
   creado:          'Empresa registrada',
   estado_cambiado: 'Estado actualizado',
   nota:            'Nota agregada',
   contacto:        'Contacto realizado',
 };
+
+export const STATUS_ORDER: EmpresaStatus[] = ['prospecto', 'contactado', 'negociando', 'ganado', 'perdido'];

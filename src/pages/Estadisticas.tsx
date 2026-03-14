@@ -40,7 +40,7 @@ export default function Estadisticas() {
 
   if (!stats) return null;
 
-  const { totals, memberStats, categoryStats, trend, conversionRate } = stats;
+  const { totals, memberStats, categoryStats, serviceStats, trend, conversionRate } = stats;
 
   // Data for stacked bar (team)
   const teamBarData = memberStats.map(m => ({
@@ -190,8 +190,40 @@ export default function Estadisticas() {
         </div>
       </div>
 
-      {/* Category stats */}
+      {/* Service + Category stats */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Service table */}
+        <div className="card p-5">
+          <h2 className="section-title mb-4">Por servicio</h2>
+          <div className="space-y-3">
+            {serviceStats && serviceStats.map(svc => {
+              const pct = svc.total > 0 ? (svc.ganados / svc.total) * 100 : 0;
+              return (
+                <div key={svc.name}>
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: svc.color }} />
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{svc.name}</span>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {svc.ganados}/{svc.total} ({pct.toFixed(0)}%)
+                    </div>
+                  </div>
+                  <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all"
+                      style={{ width: `${Math.max(pct, 2)}%`, backgroundColor: svc.color }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+            {(!serviceStats || serviceStats.length === 0) && (
+              <p className="text-sm text-gray-400">Sin datos</p>
+            )}
+          </div>
+        </div>
+
         {/* Category table */}
         <div className="card p-5">
           <h2 className="section-title mb-4">Por categoría</h2>
@@ -224,9 +256,11 @@ export default function Estadisticas() {
           </div>
         </div>
 
-        {/* Pie */}
-        <div className="card p-5">
-          <h2 className="section-title mb-4">Distribución total</h2>
+      </div>
+
+      {/* Pie */}
+      <div className="card p-5">
+        <h2 className="section-title mb-4">Distribución total</h2>
           <ResponsiveContainer width="100%" height={220}>
             <PieChart>
               <Pie
@@ -248,7 +282,6 @@ export default function Estadisticas() {
               <Legend iconType="circle" iconSize={8} />
             </PieChart>
           </ResponsiveContainer>
-        </div>
       </div>
     </div>
   );
