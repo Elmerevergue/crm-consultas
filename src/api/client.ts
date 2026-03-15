@@ -6,3 +6,6 @@ export { empresasAPI } from './empresas';
 export { actividadesAPI } from './actividades';
 export { remindersAPI } from './reminders';
 export { statsAPI } from './stats';
+export { attachmentsAPI } from './attachments';
+export { pagosAPI } from './pagos';
+export { templatesAPI } from './templates';

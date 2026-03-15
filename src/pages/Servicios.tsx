@@ -49,7 +49,7 @@ function ServiceForm({
         <label className="label">Precio / Rango (opcional)</label>
         <input
           className="input"
-          placeholder="Ej. $5,000 - $15,000 o Desde $2,000"
+          placeholder="Ej. Q5,000 - Q15,000 o Desde Q2,000"
           value={price}
           onChange={e => setPrice(e.target.value)}
         />

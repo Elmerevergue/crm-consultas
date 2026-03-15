@@ -206,7 +206,7 @@ export default function EmpresaForm() {
             </div>
             <div>
               <label className="label">Teléfono</label>
-              <input className="input" type="tel" placeholder="+52 55 1234 5678" value={form.phone} onChange={set('phone')} />
+              <input className="input" type="tel" placeholder="+502 1234 5678" value={form.phone} onChange={set('phone')} />
             </div>
           </div>
         </div>

@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, Building2, Tag, Users, BarChart3,
   Menu, X, Columns, Bell, Moon, Sun,
-  Briefcase, LogOut,
+  Briefcase, LogOut, CalendarDays, MessageSquare,
+  DollarSign, WifiOff,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { remindersAPI } from '../api/client';
@@ -11,13 +12,17 @@ import { useCurrentUser } from '../context/UserContext';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import Avatar from './Avatar';
+import { useRealtimeNotifications } from '../hooks/useRealtimeNotifications';
 
 const NAV_ITEMS = [
   { to: '/dashboard',     icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/empresas',      icon: Building2,       label: 'Clientes' },
   { to: '/kanban',        icon: Columns,         label: 'Kanban' },
   { to: '/recordatorios', icon: Bell,            label: 'Recordatorios' },
+  { to: '/calendario',    icon: CalendarDays,    label: 'Calendario' },
+  { to: '/pagos',         icon: DollarSign,      label: 'Pagos' },
   { to: '/servicios',     icon: Briefcase,       label: 'Servicios' },
+  { to: '/plantillas',    icon: MessageSquare,   label: 'Plantillas' },
   { to: '/categorias',    icon: Tag,             label: 'Categorías' },
   { to: '/equipo',        icon: Users,           label: 'Equipo' },
   { to: '/estadisticas',  icon: BarChart3,       label: 'Estadísticas' },
@@ -25,9 +30,21 @@ const NAV_ITEMS = [
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [offline, setOffline] = useState(!navigator.onLine);
   const { currentUser } = useCurrentUser();
   const { dark, toggle } = useTheme();
   const { signOut } = useAuth();
+
+  // Subscribe to realtime notifications
+  useRealtimeNotifications();
+
+  useEffect(() => {
+    const on = () => setOffline(false);
+    const off = () => setOffline(true);
+    window.addEventListener('online', on);
+    window.addEventListener('offline', off);
+    return () => { window.removeEventListener('online', on); window.removeEventListener('offline', off); };
+  }, []);
 
   // Count pending reminders for badge
   const { data: pendingReminders = [] } = useQuery({
@@ -142,6 +159,11 @@ export default function Layout() {
             <Menu size={20} />
           </button>
           <div className="flex-1" />
+          {offline && (
+            <div className="flex items-center gap-1.5 text-xs text-amber-600 font-medium bg-amber-50 dark:bg-amber-900/30 px-2.5 py-1 rounded-full">
+              <WifiOff size={13} /> Sin conexión
+            </div>
+          )}
           {overdueCount > 0 && (
             <div className="flex items-center gap-1.5 text-xs text-red-500 font-medium">
               <Bell size={14} />

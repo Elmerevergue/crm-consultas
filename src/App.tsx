@@ -6,14 +6,18 @@ import EmpresaForm from './pages/EmpresaForm';
 import EmpresaDetalle from './pages/EmpresaDetalle';
 import Kanban from './pages/Kanban';
 import Recordatorios from './pages/Recordatorios';
+import Calendario from './pages/Calendario';
 import Categorias from './pages/Categorias';
 import Servicios from './pages/Servicios';
+import Plantillas from './pages/Plantillas';
+import Pagos from './pages/Pagos';
 import Equipo from './pages/Equipo';
 import Estadisticas from './pages/Estadisticas';
 import Login from './pages/Login';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { UserProvider } from './context/UserContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { ToastProvider } from './context/ToastContext';
 
 function ProtectedRoutes() {
   const { user, loading } = useAuth();
@@ -45,8 +49,11 @@ function ProtectedRoutes() {
           <Route path="empresas/:id/editar" element={<EmpresaForm />} />
           <Route path="kanban"             element={<Kanban />} />
           <Route path="recordatorios"      element={<Recordatorios />} />
+          <Route path="calendario"         element={<Calendario />} />
           <Route path="categorias"         element={<Categorias />} />
           <Route path="servicios"          element={<Servicios />} />
+          <Route path="plantillas"         element={<Plantillas />} />
+          <Route path="pagos"              element={<Pagos />} />
           <Route path="equipo"             element={<Equipo />} />
           <Route path="estadisticas"       element={<Estadisticas />} />
         </Route>
@@ -59,11 +66,13 @@ function ProtectedRoutes() {
 export default function App() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <ProtectedRoutes />
-        </BrowserRouter>
-      </AuthProvider>
+      <ToastProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <ProtectedRoutes />
+          </BrowserRouter>
+        </AuthProvider>
+      </ToastProvider>
     </ThemeProvider>
   );
 }

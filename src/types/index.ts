@@ -150,3 +150,67 @@ export const ACTION_LABELS: Record<string, string> = {
 };
 
 export const STATUS_ORDER: EmpresaStatus[] = ['prospecto', 'contactado', 'negociando', 'ganado', 'perdido'];
+
+// ── Archivos adjuntos ──
+export interface Attachment {
+  id: string;
+  empresa_id: string;
+  file_name: string;
+  file_url: string;
+  file_type: string;
+  file_size: number;
+  uploaded_by: string | null;
+  created_at: string;
+  uploader_name?: string;
+}
+
+// ── Pagos / Cotizaciones ──
+export type PaymentType = 'cotizacion' | 'pago';
+export type PaymentStatus = 'pendiente' | 'pagado' | 'cancelado';
+
+export interface Payment {
+  id: string;
+  empresa_id: string;
+  amount: number;
+  concept: string;
+  type: PaymentType;
+  status: PaymentStatus;
+  date: string;
+  notes: string;
+  created_by: string | null;
+  created_at: string;
+  empresa_name?: string;
+  creator_name?: string;
+}
+
+export const PAYMENT_TYPE_LABELS: Record<PaymentType, string> = {
+  cotizacion: 'Cotización',
+  pago: 'Pago',
+};
+
+export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
+  pendiente: 'Pendiente',
+  pagado: 'Pagado',
+  cancelado: 'Cancelado',
+};
+
+export const PAYMENT_STATUS_COLORS: Record<PaymentStatus, { bg: string; text: string }> = {
+  pendiente: { bg: 'bg-amber-100', text: 'text-amber-700' },
+  pagado:    { bg: 'bg-green-100', text: 'text-green-700' },
+  cancelado: { bg: 'bg-red-100',   text: 'text-red-700' },
+};
+
+// ── Plantillas de mensajes ──
+export interface MessageTemplate {
+  id: string;
+  name: string;
+  category: string;
+  content: string;
+  created_by: string | null;
+  created_at: string;
+}
+
+// ── Formato moneda GTQ ──
+export function formatGTQ(amount: number): string {
+  return `Q${amount.toLocaleString('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
